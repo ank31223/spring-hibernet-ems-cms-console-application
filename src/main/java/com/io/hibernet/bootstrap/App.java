@@ -20,9 +20,10 @@ public class App {
 
 		AbstractApplicationContext context = new AnnotationConfigApplicationContext(JavaConfig.class);
 
-		ClientControllerInterface clientControllerInterface = context.getBean("client", ClientController.class);
 		EmployeeControllerInterface employeeControllerInterface = context.getBean("employeeController",
 				EmployeeController.class);
+		ClientControllerInterface clientControllerInterface = context.getBean("client", ClientController.class);
+
 
 		Scanner scanner = new Scanner(System.in);
 

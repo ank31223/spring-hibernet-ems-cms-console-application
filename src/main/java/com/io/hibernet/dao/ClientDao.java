@@ -2,6 +2,9 @@ package com.io.hibernet.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -38,7 +41,7 @@ public class ClientDao {
 		Transaction tx = session.getTransaction();
 
 		tx.begin();
-		Client client = session.get(Client.class, clientId);
+		Client client = (Client) session.get(Client.class, clientId);
 		session.delete(client);
 		tx.commit();
 
@@ -64,15 +67,16 @@ public class ClientDao {
 		Transaction tx = session.getTransaction();
 
 		tx.begin();
-		Client client = session.get(Client.class,clientId);
+		Client client = session.get(Client.class, clientId);
+
 		tx.commit();
 		session.close();
-        
+
 		return client;
 	}
 
 	public void updateClient(Client client) {
-		
+
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
@@ -85,9 +89,10 @@ public class ClientDao {
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
-		Client client=session.get(Client.class,clientId);
+		Client client = (Client) session.get(Client.class, clientId);
+		System.out.println(client.getEmployees());
 		client.getEmployees().add(employee);
-		session.update(client);
+		System.out.println(client.getEmployees());
 		tx.commit();
 		session.close();
 	}
@@ -97,28 +102,93 @@ public class ClientDao {
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
-		Client client=session.get(Client.class,clientId);
+		Client client = (Client) session.get(Client.class, clientId);
 		client.getEmployees().add(employee);
 		session.update(client);
 		tx.commit();
 		session.close();
-		
+
 	}
 
 	public List<Employee> getAllEmployeesUnderClient(String clientId) {
-		
+
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
-		
-		Client client=session.get(Client.class, clientId);
-		List<Employee> employees=client.getEmployees();
+
+		Client client = (Client) session.get(Client.class, clientId);
+		List<Employee> employees = client.getEmployees();
 		tx.commit();
-		
+
 		session.close();
-		
+
 		return employees;
-		
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Client> getAllAssignableClients(List<String> idsList) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.getTransaction();
+		tx.begin();
+
+		System.out.print(idsList);
+		List<Client> list;
+		if (idsList.size() != 0) {
+			Query q = session.createQuery("from Client where id not in (:idsList) ");
+			q.setParameter("idsList", idsList);
+			list = q.getResultList();
+		} else {
+			System.out.print("Ankit.............");
+			list = (List<Client>) session.createQuery("from Client").list();
+		}
+
+		tx.commit();
+		session.close();
+
+		return list;
+
+	}
+
+	public void removeEmployeeFromClientForEmployee(String clientId, Employee employee) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.getTransaction();
+		tx.begin();
+
+		Client client = (Client) session.get(Client.class, clientId);
+		client.getEmployees().remove(employee);
+		int i = 0;
+		for (Employee employee2 : client.getEmployees()) {
+			if (employee2.getId().equalsIgnoreCase(employee.getId())) {
+				client.getEmployees().remove(i);
+				break;
+			}
+		}
+		session.update(client);
+		tx.commit();
+
+		session.close();
+
+	}
+
+	public void removeEmployeeFromClient(String clientId, Employee employee) {
+
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.getTransaction();
+		tx.begin();
+
+		Client client = (Client) session.get(Client.class, clientId);
+		int i = 0;
+		for (Employee employee2 : client.getEmployees()) {
+			if (employee2.getId().equalsIgnoreCase(employee.getId())) {
+				client.getEmployees().remove(i);
+				break;
+			}
+		}
+		session.update(client);
+		tx.commit();
+
+		session.close();
 	}
 
 }

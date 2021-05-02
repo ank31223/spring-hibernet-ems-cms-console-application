@@ -16,10 +16,10 @@ public class EmployeeController implements EmployeeControllerInterface {
 	private EmployeeServiceInterface employeeServiceInterface;
 	private Scanner scanner;
 
-	public EmployeeController() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+//	public EmployeeController() {
+//		super();
+//		// TODO Auto-generated constructor stub
+//	}
 
 	@Autowired
 	public EmployeeController(EmployeeService employeeService) {
@@ -148,6 +148,22 @@ public class EmployeeController implements EmployeeControllerInterface {
 
 	@Override
 	public void deletClientFromEmployee() {
+		
+		scanner.nextLine();
+		System.out.println("Enter the id of Employee whose clients you want to delete");
+		String employeeId = scanner.nextLine();
+		
+		for (Client client : employeeServiceInterface.getAllClientsUnderEmployee(employeeId)) {
+			System.out.println(client);
+		}
+		
+		System.out.println("..............................................................................................................");
+		
+		System.out.println("Enter the id of client whom you want to remove from this employee");
+		String clientId = scanner.nextLine();
+		
+		employeeServiceInterface.removeClientFromEmployee(employeeId,clientId);
+		
 
 		
 		
@@ -159,13 +175,22 @@ public class EmployeeController implements EmployeeControllerInterface {
 		System.out.println("Enter the id of employee under which you want to add client");
 		String employeeId = scanner.nextLine();
 
+		
+		
+		for (Client client : employeeServiceInterface.getAllClientsUnderEmployee(employeeId)) {
+			System.out.println(client);
+		}
+		
+		System.out.println("......................................................................................................");
+		
+		
+		for (Client client: employeeServiceInterface.getAllAssignableClients(employeeId)) {
+			System.out.println(client);
+		}
+//
 		System.out.println("Enter the id of client that is to be added");
 		String clientId = scanner.nextLine();
 		
-		for (Client client : employeeServiceInterface.getAllClientsUnderEmployee(employeeId)) {
-			System.out.println();
-		}
-
 		employeeServiceInterface.addClientToEmployee(employeeId, clientId);
 
 	}

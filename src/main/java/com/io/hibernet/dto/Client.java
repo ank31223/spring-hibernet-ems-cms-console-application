@@ -2,6 +2,8 @@ package com.io.hibernet.dto;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -11,17 +13,22 @@ import javax.persistence.ManyToMany;
 public class Client {
 
 	@Id
+	@Column(unique = true, nullable = false)
 	private String id;
+	
 	private String clientName;
 	private String clientAddress;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "clients",fetch = FetchType.EAGER)
 	private List<Employee> employees;
-
+	
+	
+	
 	public Client() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
 
 	public Client(String id, String clientName, String clientAddress) {
 		super();
@@ -30,6 +37,7 @@ public class Client {
 		this.clientAddress = clientAddress;
 	}
 
+	
 	public String getId() {
 		return id;
 	}

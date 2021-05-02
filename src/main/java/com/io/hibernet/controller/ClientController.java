@@ -16,10 +16,10 @@ public class ClientController implements ClientControllerInterface {
 	private ClientServiceInterface clientServiceInterface;
 	private Scanner scanner;
 
-	public ClientController() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+//	public ClientController() {
+//		super();
+//		// TODO Auto-generated constructor stub
+//	}
 
 	@Autowired
 	public ClientController(ClientService clientService) {
@@ -101,7 +101,18 @@ public class ClientController implements ClientControllerInterface {
 		scanner.nextLine();
 		System.out.println("Enter the id of client under which you want to add employee");
 		String clientId = scanner.nextLine();
+		
+		for (Employee employee : clientServiceInterface.getAllEmployeesUnderClient(clientId)) {
+			System.out.println(employee);
+		}
+		
+		
+		System.out.println("......................................................................................................................................");
 
+		for (Employee employee :clientServiceInterface.getAllAssignableEmployees(clientId)) {
+			System.out.println(employee);
+		}
+		
 		System.out.println("Enter the id of employee that is to be added under this client");
 		String employeeId = scanner.nextLine();
 
@@ -116,7 +127,7 @@ public class ClientController implements ClientControllerInterface {
 		System.out.println("Enter id of client whose employees details you want to know");
 		String clientId = scanner.nextLine();
 
-		for (Employee employee: clientServiceInterface.getAllEmployeesUnderClient(clientId)) {
+		for (Employee employee : clientServiceInterface.getAllEmployeesUnderClient(clientId)) {
 			System.out.println(employee);
 		}
 
@@ -124,7 +135,21 @@ public class ClientController implements ClientControllerInterface {
 
 	@Override
 	public void deleteEmpoyeeFromClient() {
-		// TODO Auto-generated method stub
+		
+		scanner.nextLine();
+		System.out.println("Enter the id of Client whose employees you want to remove from this client");
+		String clientId = scanner.nextLine();
+		
+		for (Employee employee: clientServiceInterface.getAllEmployeesUnderClient(clientId)) {
+			System.out.println(employee);
+		}
+		
+		System.out.println("..............................................................................................................");
+		
+		System.out.println("Enter the id of employee whom you want to remove from this client");
+		String employeeId = scanner.nextLine();
+		
+		clientServiceInterface.removeEmployeeFromClient(employeeId,clientId);
 
 	}
 

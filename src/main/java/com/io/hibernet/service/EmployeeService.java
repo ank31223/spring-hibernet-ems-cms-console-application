@@ -1,5 +1,6 @@
 package com.io.hibernet.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,15 @@ public class EmployeeService implements EmployeeServiceInterface {
 	private EmployeeDao employeeDao;
 	private ClientServiceInterface clientServiceInterface;
 
-	public EmployeeService() {
-		super();
-	}
-
-	public EmployeeService(EmployeeDao employeeDao) {
-		super();
-		this.employeeDao = employeeDao;
-
-	}
+//	public EmployeeService() {
+//		super();
+//	}
+//
+//	public EmployeeService(EmployeeDao employeeDao) {
+//		super();
+//		this.employeeDao = employeeDao;
+//
+//	}
 
 	@Autowired
 	public void setEmployeeDao(EmployeeDao employeeDao) {
@@ -63,13 +64,14 @@ public class EmployeeService implements EmployeeServiceInterface {
 	@Override
 	public void updateEmployee(Employee employee) {
 		employeeDao.updateEmployee(employee);
-
 	}
 
 	@Override
 	public void addClientToEmployee(String employeeId, String clientId) {
 		Employee employee = getEmployeeById(employeeId);
 		Client client = clientServiceInterface.getClientById(clientId);
+//		System.out.println(employee);
+//		System.out.println(client);
 		employeeDao.addClientToEmployee(employeeId, client);
 		clientServiceInterface.addEmployeeToClientForEmployee(clientId, employee);
 	}
@@ -83,6 +85,36 @@ public class EmployeeService implements EmployeeServiceInterface {
 	@Override
 	public List<Client> getAllClientsUnderEmployee(String employeeId) {
 		return employeeDao.getAllClientsUnderEmployee(employeeId);
+	}
+
+	@Override
+	public List<Client> getAllAssignableClients(String employeeId) {
+		List<Client> workingClients=getAllClientsUnderEmployee(employeeId);
+		List<String> IdsList=new ArrayList<String>();
+		for (Client client : workingClients) {
+			IdsList.add(client.getId());
+		}
+		return clientServiceInterface.getAllAssignableClients(IdsList);
+	}
+
+	@Override
+	public List<Employee> getAllAssignableEmployees(List<String> employeeListIds) {
+		return employeeDao.getAllAssignableEmployees(employeeListIds);
+	}
+
+	@Override
+	public void removeClientFromEmployee(String employeeId, String clientId) {
+		Employee employee=getEmployeeById(employeeId);
+		Client client=clientServiceInterface.getClientById(clientId);
+		employeeDao.removeClientFromEmployee(employeeId,client);
+		clientServiceInterface.removeEmployeeFromClientForEmployee(clientId,employee);
+		
+	}
+
+	@Override
+	public void removeClientFromEmployeeForClient(String employeeId, Client client) {
+		employeeDao.removeClientFromEmployeeForClient(employeeId,client);
+		
 	}
 
 }

@@ -1,7 +1,10 @@
 package com.io.hibernet.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -10,6 +13,7 @@ import javax.persistence.ManyToMany;
 @Entity
 public class Employee {
 	@Id
+	@Column(unique = true, nullable = false)
 	private String id;
 	private String name;
 	private String gender;
@@ -19,10 +23,6 @@ public class Employee {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Client> clients;
 
-	public Employee() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	public String getId() {
 		return id;

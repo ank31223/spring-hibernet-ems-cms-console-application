@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.io.hibernet.dto.Client;
 import com.io.hibernet.dto.Employee;
 
-@Component
+
 public interface EmployeeServiceInterface {
 
 	void addEmployee(Employee employee);
@@ -25,6 +25,14 @@ public interface EmployeeServiceInterface {
 	void addClientToEmployeeForClient(String employeeId, Client client);
 
 	List<Client> getAllClientsUnderEmployee(String employeeId);
+
+	List<Client> getAllAssignableClients(String employeeId);
+
+	List<Employee> getAllAssignableEmployees(List<String> employeeListIds);
+
+	void removeClientFromEmployee(String employeeId, String clientId);
+
+	void removeClientFromEmployeeForClient(String employeeId, Client client);
 	
 	 
 

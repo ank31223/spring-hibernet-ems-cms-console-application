@@ -1,5 +1,6 @@
 package com.io.hibernet.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,15 @@ public class ClientService implements ClientServiceInterface {
 	private ClientDao clientDao;
 	private EmployeeServiceInterface employeeServiceInterface;
 
-	public ClientService() {
-		super();
-	}
-
-	public ClientService(ClientDao clientDao, EmployeeService employeeService) {
-		super();
-		this.clientDao = clientDao;
-		this.employeeServiceInterface = employeeService;
-	}
+//	public ClientService() {
+//		super();
+//	}
+//
+//	public ClientService(ClientDao clientDao, EmployeeService employeeService) {
+//		super();
+//		this.clientDao = clientDao;
+//		this.employeeServiceInterface = employeeService;
+//	}
 
 	@Autowired
 	public void setClientDao(ClientDao clientDao) {
@@ -82,6 +83,35 @@ public class ClientService implements ClientServiceInterface {
 	@Override
 	public List<Employee> getAllEmployeesUnderClient(String clientId) {
 		return clientDao.getAllEmployeesUnderClient(clientId);
+	}
+
+	@Override
+	public List<Client> getAllAssignableClients(List<String> idsList) {
+		return clientDao.getAllAssignableClients(idsList);
+	}
+
+	@Override
+	public List<Employee> getAllAssignableEmployees(String clientId) {
+		List<String> employeeListIds=new ArrayList<String>();
+		for (Employee employee : getAllEmployeesUnderClient(clientId)) {
+			employeeListIds.add(employee.getId());
+		}
+		return employeeServiceInterface.getAllAssignableEmployees(employeeListIds);
+	}
+
+	@Override
+	public void removeEmployeeFromClientForEmployee(String clientId, Employee employee) {
+		clientDao.removeEmployeeFromClientForEmployee(clientId,employee);
+		
+	}
+
+	@Override
+	public void removeEmployeeFromClient(String employeeId, String clientId) {
+		 Client client=getClientById(clientId);
+		 Employee employee=employeeServiceInterface.getEmployeeById(employeeId);
+		 clientDao.removeEmployeeFromClient(clientId,employee);
+		 employeeServiceInterface.removeClientFromEmployeeForClient(employeeId,client);
+		 
 	}
 
 }
